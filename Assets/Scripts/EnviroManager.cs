@@ -16,6 +16,9 @@ public class EnviroManager : MonoBehaviour
     private GameObject Cursor;
     [SerializeField] private Vector3 MouseWorldPos;
     private Camera Camera;
+    [SerializeField] private Dropdown HeuristicDropdown;
+    [SerializeField] private astar.Heurisrics.HeurisricMode HeuristicMode;
+    private int HeuristicDropdownValue;
     private enum Modes
     {
         _,
@@ -29,6 +32,17 @@ public class EnviroManager : MonoBehaviour
         Camera = GetComponent<Camera>();
         Cursor = Instantiate(CursorPrefab);
         Mode = Modes._;
+
+        var manhattanOption = new Dropdown.OptionData();
+        manhattanOption.text = "Manhattan";
+        var euclideanOption = new Dropdown.OptionData();
+        euclideanOption.text = "Euclidean";
+        var options = new List<Dropdown.OptionData>() { manhattanOption, euclideanOption };
+        HeuristicDropdown.AddOptions(options);
+
+        HeuristicDropdown.onValueChanged.AddListener(delegate {
+            OnDropdownValueChanged(HeuristicDropdown);
+        });
     }
 
     void Update()
@@ -161,12 +175,21 @@ public class EnviroManager : MonoBehaviour
         BroadcastUserInputData();
     }
 
+    void OnDropdownValueChanged(Dropdown change)
+    {
+        Debug.Log(change.options[change.value].text);
+        HeuristicDropdownValue = change.value;
+        HeuristicMode = change.value == 1 ? astar.Heurisrics.HeurisricMode.Euclidean : astar.Heurisrics.HeurisricMode.Manhattan;
+    }
+
     private void BroadcastUserInputData()
     {
         EventManager.SearchInputEventArgs e = new EventManager.SearchInputEventArgs
         {
             StartPosition = this.StartPosition,
-            GoalPosition = this.GoalPosition
+            GoalPosition = this.GoalPosition,
+            HeurisricMode = this.HeuristicMode,
+            HeuristicDropdownValue = this.HeuristicDropdownValue
         };
         EventManager.InvokeSearchInputEvent(name,e);
     }

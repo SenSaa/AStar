@@ -10,6 +10,13 @@ namespace astar
     public class Heurisrics
     {
 
+        public enum HeurisricMode
+        {
+            Manhattan = 0,
+            Euclidean = 1,
+            Diagonal = 2
+        }
+
         public static float ManhattanDistance((float,float) nodePos, (float, float) goalPos, float weight=1)
         {
             var dx = Mathf.Abs(nodePos.Item1 - goalPos.Item1);

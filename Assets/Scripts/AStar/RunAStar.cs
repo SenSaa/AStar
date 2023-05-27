@@ -16,6 +16,8 @@ public class RunAStar : MonoBehaviour
 
     [SerializeField] private Vector3 StartPos;
     [SerializeField] private Vector3 GoalPos;
+    private Heurisrics.HeurisricMode HeurisricMode;
+    private int HeuristicDropdownValue;
 
     private void Awake()
     {
@@ -26,6 +28,8 @@ public class RunAStar : MonoBehaviour
     {
         StartPos = e.StartPosition;
         GoalPos = e.GoalPosition;
+        HeurisricMode = e.HeurisricMode;
+        HeuristicDropdownValue = e.HeuristicDropdownValue;
         Search();
     }
 
@@ -59,7 +63,8 @@ public class RunAStar : MonoBehaviour
         }
         */
 
-        var astar = new AStar(startNodePos, goalNodePos, obstacles, gridCellSize, gridWidth, gridHeight);
+        ///var astar = new AStar(startNodePos, goalNodePos, obstacles, gridCellSize, gridWidth, gridHeight);
+        var astar = new AStar(startNodePos, goalNodePos, obstacles, HeuristicDropdownValue, gridCellSize, gridWidth, gridHeight);
         astar.Search();
         Debug.Log(astar.PrintClosedSetString());
         var path = astar.GetPath();

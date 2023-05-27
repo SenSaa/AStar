@@ -22,8 +22,9 @@ namespace astar
         private HashSet<(float, float)> ObstaclesPositions;
         private Stopwatch stopwatch;
         private float elapsedTime;
+        private int HeurisricMode;
 
-        public AStar((float, float) StartNodePos, (float, float) GoalNodePos, HashSet<Obstacle> obs, float cellSize = 1, int gridWidth = 101, int gridHeight = 101)
+        public AStar((float, float) StartNodePos, (float, float) GoalNodePos, HashSet<Obstacle> obs, int HeurisricMode, float cellSize = 1, int gridWidth = 101, int gridHeight = 101)
         {
             stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -31,6 +32,9 @@ namespace astar
             this.StartNodePos = StartNodePos;
             this.GoalNodePos = GoalNodePos;
             graph = new Graph(cellSize);
+
+            this.HeurisricMode = HeurisricMode;
+            UnityEngine.Debug.Log(HeurisricMode);
 
             Obstacles = obs;
 
@@ -114,7 +118,8 @@ namespace astar
 
                     // neighbour (g) cost = current node (g) cost + distance between neighbour and current node
                     neighbour.SetGcost(currentNode.GetGcost() + Heurisrics.EuclideanDistance(currentNode.GetNodePosition(), neighbour.GetNodePosition()));
-                    neighbour.SetHcost(Heurisrics.ManhattanDistance(GoalNodePos, neighbour.GetNodePosition()));
+                    if (HeurisricMode == 1) { neighbour.SetHcost(Heurisrics.EuclideanDistance(GoalNodePos, neighbour.GetNodePosition())); }
+                    else { neighbour.SetHcost(Heurisrics.ManhattanDistance(GoalNodePos, neighbour.GetNodePosition())); }
                     // **
                     // neighbour (f) cost = neighbour (g) + neighbour (h)
                     var fCost = neighbour.GetGcost() + neighbour.GetHcost();
