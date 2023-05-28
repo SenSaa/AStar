@@ -20,6 +20,8 @@ public class EnviroManager : MonoBehaviour
     [SerializeField] private astar.Heurisrics.HeurisricMode HeuristicMode;
     [SerializeField] private int HeuristicDropdownValue;
     [SerializeField] private float GridCellSize;
+    private HashSet<Obstacle> Obstacles;
+
     private enum Modes
     {
         _,
@@ -37,6 +39,8 @@ public class EnviroManager : MonoBehaviour
         HeuristicDropdownInit();
 
         GridCellSize = 1;
+
+        Obstacles = new HashSet<Obstacle>();
     }
 
     private void HeuristicDropdownInit()
@@ -58,10 +62,9 @@ public class EnviroManager : MonoBehaviour
     {
         OnMouseClick();
         UpdateMousePosition();
-        MoveCamera();
         UpdateCursor();
+        MoveCamera();
     }
-
 
     private void OnMouseClick()
     {
@@ -77,35 +80,18 @@ public class EnviroManager : MonoBehaviour
             }
             if (Mode != Modes._) { Mode = Modes._; }
         }
+
+        if (Input.GetMouseButton(1) && !EventSystem.current.IsPointerOverGameObject()) // Left click while ignoring scene object!
+        {
+            Obstacles.Add(new Obstacle(MouseWorldPos.x, MouseWorldPos.z));
+            DrawPoints(MouseWorldPos, GridCellSize);
+        }
     }
 
     private bool IsShiftKeyPressed()
     {
         return Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift);
     }
-
-    // -------------------------------------------------------------------------------
-
-    private void MoveCamera()
-    {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
-        float ZoomInput = Input.GetAxisRaw("Mouse ScrollWheel");
-        float speed = 100;
-        if (IsShiftKeyPressed())
-            speed = 300;
-
-        if (ZoomInput != 0)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y - ZoomInput * speed, transform.position.z);
-        }
-        else
-        {
-            transform.position = new Vector3(transform.position.x + horizontalInput * Time.unscaledDeltaTime * speed, transform.position.y, transform.position.z + verticalInput * Time.unscaledDeltaTime * speed);
-        }
-    }
-
-    // -------------------------------------------------------------------------------
 
     private void UpdateMousePosition()
     {
@@ -167,6 +153,25 @@ public class EnviroManager : MonoBehaviour
         cursorPositionText.text = Cursor.transform.position.x + ", " + Cursor.transform.position.z;
     }
 
+    private void MoveCamera()
+    {
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        float verticalInput = Input.GetAxisRaw("Vertical");
+        float ZoomInput = Input.GetAxisRaw("Mouse ScrollWheel");
+        float speed = 100;
+        if (IsShiftKeyPressed())
+            speed = 300;
+
+        if (ZoomInput != 0)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y - ZoomInput * speed, transform.position.z);
+        }
+        else
+        {
+            transform.position = new Vector3(transform.position.x + horizontalInput * Time.unscaledDeltaTime * speed, transform.position.y, transform.position.z + verticalInput * Time.unscaledDeltaTime * speed);
+        }
+    }
+
 
     public void OnSelectStartPosition()
     {
@@ -200,11 +205,23 @@ public class EnviroManager : MonoBehaviour
         {
             StartPosition = this.StartPosition,
             GoalPosition = this.GoalPosition,
+            Obstacles = this.Obstacles,
             HeurisricMode = this.HeuristicMode,
             HeuristicDropdownValue = this.HeuristicDropdownValue,
             GridCellSize = this.GridCellSize
         };
         EventManager.InvokeSearchInputEvent(name,e);
+    }
+
+
+    private void DrawPoints(Vector3 pos, float size)
+    {
+        //Vector3 scale = new Vector3(0.9f, 0.01f, 0.9f);
+        Vector3 scale = new Vector3(size, 0.01f, size);
+        GameObject pointObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        pointObj.transform.position = pos;
+        pointObj.transform.localScale = scale;
+        pointObj.GetComponent<MeshRenderer>().material.color = Color.gray;
     }
 
 }

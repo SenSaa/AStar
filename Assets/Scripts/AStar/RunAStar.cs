@@ -19,6 +19,7 @@ public class RunAStar : MonoBehaviour
     private Heurisrics.HeurisricMode HeurisricMode;
     private int HeuristicDropdownValue;
     private float GridCellSize;
+    private HashSet<Obstacle> Obstacles;
 
     private void Awake()
     {
@@ -29,6 +30,7 @@ public class RunAStar : MonoBehaviour
     {
         StartPos = e.StartPosition;
         GoalPos = e.GoalPosition;
+        Obstacles = e.Obstacles;
         HeurisricMode = e.HeurisricMode;
         HeuristicDropdownValue = e.HeuristicDropdownValue;
         GridCellSize = e.GridCellSize;
@@ -48,24 +50,8 @@ public class RunAStar : MonoBehaviour
         int gridWidth = Mathf.CeilToInt(goalNodePos.x + startNodePos.x);
         int gridHeight = Mathf.CeilToInt(goalNodePos.z + startNodePos.z);
 
-        var obstacles = new HashSet<Obstacle>();
-        /*
-        int x_step = 5;
-        int z_step = 5;
-        for (int y = 1; y < gridHeight / 2; y += x_step)
-        {
-            for (int x = 1; x < gridWidth / 2; x += z_step)
-            {
-                if (x != StartPos.x && y != StartPos.z && x != GoalPos.x && y != GoalPos.z)
-                {
-                    obstacles.Add(new Obstacle(x, y));
-                }
-            }
-        }
-        */
-
         ///var astar = new AStar(startNodePos, goalNodePos, obstacles, gridCellSize, gridWidth, gridHeight);
-        var astar = new AStar(startNodePos, goalNodePos, obstacles, HeuristicDropdownValue, GridCellSize, gridWidth, gridHeight);
+        var astar = new AStar(startNodePos, goalNodePos, Obstacles, HeuristicDropdownValue, GridCellSize, gridWidth, gridHeight);
         astar.Search();
         Debug.Log(astar.PrintClosedSetString());
         var path = astar.GetPath();
