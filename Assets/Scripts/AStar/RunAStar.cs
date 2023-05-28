@@ -74,8 +74,8 @@ public class RunAStar : MonoBehaviour
         Debug.Log("Time in s = " + Mathf.Round(astar.GetElapsedTime() / 1000));
         
         DrawPath(path);
-        DrawPoints(path);
-        DrawPoints(astar.GetClosedSet());
+        DrawPoints(path, GridCellSize);
+        DrawPoints(astar.GetClosedSet(), GridCellSize);
     }
 
     void Update()
@@ -96,10 +96,11 @@ public class RunAStar : MonoBehaviour
         lineRenderer.widthMultiplier = 0.3f;
     }
 
-    private void DrawPoints(HashSet<Node> path)
+    private void DrawPoints(HashSet<Node> path, float size)
     {
         Vector3 pos = Vector3.zero;
-        Vector3 scale = new Vector3(0.9f, 0.01f, 0.9f);
+        //Vector3 scale = new Vector3(0.9f, 0.01f, 0.9f);
+        Vector3 scale = new Vector3(size, 0.01f, size);
         for (int i = 0; i < path.Count; i++)
         {
             pos.Set(path.ElementAt(i).GetNodePosition().Item1, 0.01f, path.ElementAt(i).GetNodePosition().Item2);
@@ -108,10 +109,11 @@ public class RunAStar : MonoBehaviour
             pointObj.transform.localScale = scale;
         }
     }
-    private void DrawPoints(CustomQueue<Node> path)
+    private void DrawPoints(CustomQueue<Node> path, float size)
     {
         Vector3 pos = Vector3.zero;
-        Vector3 scale = new Vector3(0.9f, 0.01f, 0.9f);
+        //Vector3 scale = new Vector3(0.9f, 0.01f, 0.9f);
+        Vector3 scale = new Vector3(size, 0.01f, size);
         for (int i = 0; i < path.length; i++)
         {
             pos.Set(path.Get(i).GetNodePosition().Item1, 0.01f, path.Get(i).GetNodePosition().Item2);
