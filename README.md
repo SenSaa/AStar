@@ -1,7 +1,7 @@
 # AStar
 A* Search Algorithm
 
-My implementation of the A* search algorithm from psuedocode in Unity (C#) using Queue data structure.
+Implementation of the A* search algorithm from psuedocode, created in Unity (C#) using Queue data structure.
 
 - Press "Start" button to select Start position, and "Goal" for destination, once done, press "Search" to perform A* search.
 - By default the heuristic function is Manhattan distance, but Euclidean distance can also be selected from the drop down.
