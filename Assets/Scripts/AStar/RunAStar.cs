@@ -18,6 +18,7 @@ public class RunAStar : MonoBehaviour
     [SerializeField] private Vector3 GoalPos;
     private Heurisrics.HeurisricMode HeurisricMode;
     private int HeuristicDropdownValue;
+    private float GridCellSize;
 
     private void Awake()
     {
@@ -30,6 +31,7 @@ public class RunAStar : MonoBehaviour
         GoalPos = e.GoalPosition;
         HeurisricMode = e.HeurisricMode;
         HeuristicDropdownValue = e.HeuristicDropdownValue;
+        GridCellSize = e.GridCellSize;
         Search();
     }
 
@@ -42,10 +44,9 @@ public class RunAStar : MonoBehaviour
         var startNodePos = (StartPos.x, StartPos.z);
         var goalNodePos = (GoalPos.x, GoalPos.z);
 
-        float gridCellSize = 1f;
+        //float gridCellSize = 1f;
         int gridWidth = Mathf.CeilToInt(goalNodePos.x + startNodePos.x);
         int gridHeight = Mathf.CeilToInt(goalNodePos.z + startNodePos.z);
-
 
         var obstacles = new HashSet<Obstacle>();
         /*
@@ -64,7 +65,7 @@ public class RunAStar : MonoBehaviour
         */
 
         ///var astar = new AStar(startNodePos, goalNodePos, obstacles, gridCellSize, gridWidth, gridHeight);
-        var astar = new AStar(startNodePos, goalNodePos, obstacles, HeuristicDropdownValue, gridCellSize, gridWidth, gridHeight);
+        var astar = new AStar(startNodePos, goalNodePos, obstacles, HeuristicDropdownValue, GridCellSize, gridWidth, gridHeight);
         astar.Search();
         Debug.Log(astar.PrintClosedSetString());
         var path = astar.GetPath();
@@ -92,7 +93,7 @@ public class RunAStar : MonoBehaviour
             pos.Set(path.ElementAt(i).GetNodePosition().Item1, 0.1f, path.ElementAt(i).GetNodePosition().Item2);
             lineRenderer.SetPosition(i, pos);
         }
-        lineRenderer.widthMultiplier = 0.2f;
+        lineRenderer.widthMultiplier = 0.3f;
     }
 
     private void DrawPoints(HashSet<Node> path)

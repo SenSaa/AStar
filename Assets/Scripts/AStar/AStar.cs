@@ -34,7 +34,6 @@ namespace astar
             graph = new Graph(cellSize);
 
             this.HeurisricMode = HeurisricMode;
-            UnityEngine.Debug.Log(HeurisricMode);
 
             Obstacles = obs;
 

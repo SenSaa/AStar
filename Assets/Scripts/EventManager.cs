@@ -22,6 +22,7 @@ namespace Utils
             public Vector3 GoalPosition { get; set; }
             public astar.Heurisrics.HeurisricMode HeurisricMode { get; set; }
             public int HeuristicDropdownValue { get; set; }
+            public float GridCellSize { get; set; }
         }
 
     }

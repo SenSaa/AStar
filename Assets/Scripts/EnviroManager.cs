@@ -18,7 +18,8 @@ public class EnviroManager : MonoBehaviour
     private Camera Camera;
     [SerializeField] private Dropdown HeuristicDropdown;
     [SerializeField] private astar.Heurisrics.HeurisricMode HeuristicMode;
-    private int HeuristicDropdownValue;
+    [SerializeField] private int HeuristicDropdownValue;
+    [SerializeField] private float GridCellSize;
     private enum Modes
     {
         _,
@@ -33,6 +34,13 @@ public class EnviroManager : MonoBehaviour
         Cursor = Instantiate(CursorPrefab);
         Mode = Modes._;
 
+        HeuristicDropdownInit();
+
+        GridCellSize = 1;
+    }
+
+    private void HeuristicDropdownInit()
+    {
         var manhattanOption = new Dropdown.OptionData();
         manhattanOption.text = "Manhattan";
         var euclideanOption = new Dropdown.OptionData();
@@ -45,6 +53,7 @@ public class EnviroManager : MonoBehaviour
         });
     }
 
+
     void Update()
     {
         OnMouseClick();
@@ -52,7 +61,6 @@ public class EnviroManager : MonoBehaviour
         MoveCamera();
         UpdateCursor();
     }
-
 
 
     private void OnMouseClick()
@@ -177,9 +185,13 @@ public class EnviroManager : MonoBehaviour
 
     void OnDropdownValueChanged(Dropdown change)
     {
-        Debug.Log(change.options[change.value].text);
         HeuristicDropdownValue = change.value;
         HeuristicMode = change.value == 1 ? astar.Heurisrics.HeurisricMode.Euclidean : astar.Heurisrics.HeurisricMode.Manhattan;
+    }
+
+    public void OnGridCellSizeValueChanged(InputField inputField)
+    {
+        GridCellSize = float.Parse(inputField.text);
     }
 
     private void BroadcastUserInputData()
@@ -189,7 +201,8 @@ public class EnviroManager : MonoBehaviour
             StartPosition = this.StartPosition,
             GoalPosition = this.GoalPosition,
             HeurisricMode = this.HeuristicMode,
-            HeuristicDropdownValue = this.HeuristicDropdownValue
+            HeuristicDropdownValue = this.HeuristicDropdownValue,
+            GridCellSize = this.GridCellSize
         };
         EventManager.InvokeSearchInputEvent(name,e);
     }
